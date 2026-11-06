@@ -1,15 +1,36 @@
 import java.util.Random;
 
 public class SatellitePhone extends CommunicationDevice {
+    // Уникальные свойства (п. 5)
+    private String satelliteNetwork;
+    private int signalStrength;
+    private boolean isRoaming;
 
     public SatellitePhone(String manufacturer, String model) {
         super(manufacturer, model);
+        this.satelliteNetwork = "Iridium";
+        this.signalStrength = 75;
+        this.isRoaming = true;
+    }
+
+    // Уникальные методы (п. 5)
+    public void updateSatellitePosition() {
+        if (isPowerOn) {
+            System.out.println("Поиск спутников сети " + satelliteNetwork + "... Спутник найден.");
+            this.signalStrength = Math.min(100, signalStrength + 10);
+        }
+    }
+
+    public void makeEmergencyCall() {
+        if (isPowerOn) {
+            System.out.println("ЭКСТРЕННЫЙ ВЫЗОВ через спутник " + satelliteNetwork + "! Связь установлена.");
+        }
     }
 
     @Override
     public void turnOn() {
         this.isPowerOn = true;
-        System.out.println("Спутниковый телефон " + model + " включен.");
+        System.out.println("Спутниковый телефон " + model + " включен. Холодный старт...");
     }
 
     @Override
@@ -21,14 +42,18 @@ public class SatellitePhone extends CommunicationDevice {
 
     @Override
     public String getStatus() {
-        return "Питание: " + (isPowerOn ? "Вкл" : "Выкл");
+        return "Питание: " + (isPowerOn ? "Вкл" : "Выкл") +
+                " | Спутник: " + satelliteNetwork + " | Сигнал: " + signalStrength + "%";
     }
 
     @Override
     public void connectToNetwork(String networkName) {
-        if (isPowerOn) {
+        if (isPowerOn && signalStrength > 20) {
             this.isConnected = true;
+            this.satelliteNetwork = networkName;
             System.out.println("Подключение к спутниковой сети: " + networkName + " установлено.");
+        } else {
+            System.out.println("Нет сигнала спутника (слабый уровень).");
         }
     }
 
@@ -41,11 +66,16 @@ public class SatellitePhone extends CommunicationDevice {
 
     @Override
     public void randomizeProperties() {
-        System.out.println("Свойства спутникового телефона рандомизированы.");
+        Random rand = new Random();
+        this.signalStrength = rand.nextInt(0, 101);
+        this.isRoaming = rand.nextBoolean();
+        String[] networks = {"Iridium", "Globalstar", "Inmarsat", "Thuraya"};
+        this.satelliteNetwork = networks[rand.nextInt(networks.length)];
     }
 
     @Override
     public String getDetailedInfo() {
-        return String.format("Спутниковый телефон [ID: %s, %s %s]", id.substring(0, 8), manufacturer, model);
+        return String.format("Спутниковый телефон [ID: %s, %s %s, Сеть: %s, Роуминг: %s]",
+                id.substring(0, 8), manufacturer, model, satelliteNetwork, isRoaming ? "Да" : "Нет");
     }
 }
