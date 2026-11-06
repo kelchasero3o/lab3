@@ -19,6 +19,7 @@ void main() {
         System.out.println("4. Функциональная работа");
         System.out.println("5. Показать все устройства");
         System.out.println("6. Рандомизировать свойства");
+        System.out.println("7. [Бонус] Широковещательная рассылка (Broadcast)"); // Добавлено
         System.out.println("0. Выход");
         System.out.print("Выберите действие: ");
 
@@ -83,6 +84,14 @@ void main() {
             case "6" -> {
                 manager.getDevices().forEach(CommunicationDevice::randomizeProperties);
                 System.out.println("Свойства рандомизированы!");
+            }
+            case "7" -> { // Добавлено
+                manager.showAllDevices();
+                System.out.print("ID отправителя: ");
+                String senderId = scanner.nextLine();
+                System.out.print("Текст рассылки: ");
+                String msg = scanner.nextLine();
+                manager.broadcastMessage(senderId, msg);
             }
             case "0" -> {
                 System.out.println("Выход...");
