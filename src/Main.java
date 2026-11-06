@@ -12,7 +12,7 @@ void main() {
     manager.addDevice(new SatellitePhone("Iridium", "Extreme 9575"));
 
     while (true) {
-        System.out.println("\nМЕНЮ: КОММУНИКАЦИОННЫЕ УСТРОЙСТВА");
+        System.out.println("\nМЕНЮ: КОММУНИКАЦИОННЫЕ УСТРОЙСТВА ");
         System.out.println("1. Добавить устройство");
         System.out.println("2. Удалить устройство");
         System.out.println("3. Изменить свойства устройства");
@@ -33,12 +33,42 @@ void main() {
                 String man = scanner.nextLine();
                 System.out.print("Модель: ");
                 String mod = scanner.nextLine();
+
+                // ИСПРАВЛЕНИЕ: Теперь при создании запрашиваются все уникальные свойства
                 switch (type) {
-                    case "1" -> manager.addDevice(new Smartphone(man, mod));
-                    case "2" -> manager.addDevice(new Radio(man, mod));
-                    case "3" -> manager.addDevice(new SatellitePhone(man, mod));
+                    case "1" -> {
+                        var sm = new Smartphone(man, mod);
+                        System.out.print("Заряд батареи (0-100): ");
+                        try { sm.setBatteryLevel(Integer.parseInt(scanner.nextLine())); } catch (Exception e) { System.out.println("Оставлено значение по умолчанию"); }
+                        System.out.print("Размер экрана (дюймы): ");
+                        try { sm.setScreenSize(Double.parseDouble(scanner.nextLine())); } catch (Exception e) { System.out.println("Оставлено значение по умолчанию"); }
+                        System.out.print("Версия ОС: ");
+                        sm.setOsVersion(scanner.nextLine());
+                        manager.addDevice(sm);
+                    }
+                    case "2" -> {
+                        var r = new Radio(man, mod);
+                        System.out.print("Частота (МГц): ");
+                        try { r.setFrequency(Double.parseDouble(scanner.nextLine())); } catch (Exception e) { System.out.println("Оставлено значение по умолчанию"); }
+                        System.out.print("Громкость (0-100): ");
+                        try { r.setVolumeLevel(Integer.parseInt(scanner.nextLine())); } catch (Exception e) { System.out.println("Оставлено значение по умолчанию"); }
+                        System.out.print("Наличие антенны (true/false): ");
+                        try { r.setHasAntenna(Boolean.parseBoolean(scanner.nextLine())); } catch (Exception e) { System.out.println("Оставлено значение по умолчанию"); }
+                        manager.addDevice(r);
+                    }
+                    case "3" -> {
+                        var sp = new SatellitePhone(man, mod);
+                        System.out.print("Спутниковая сеть: ");
+                        sp.setSatelliteNetwork(scanner.nextLine());
+                        System.out.print("Сила сигнала (0-100): ");
+                        try { sp.setSignalStrength(Integer.parseInt(scanner.nextLine())); } catch (Exception e) { System.out.println("Оставлено значение по умолчанию"); }
+                        System.out.print("Роуминг (true/false): ");
+                        try { sp.setIsRoaming(Boolean.parseBoolean(scanner.nextLine())); } catch (Exception e) { System.out.println("Оставлено значение по умолчанию"); }
+                        manager.addDevice(sp);
+                    }
                     default -> System.out.println("Неверный тип.");
                 }
+                System.out.println("Устройство добавлено.");
             }
             case "2" -> {
                 manager.showAllDevices();
@@ -56,21 +86,25 @@ void main() {
                     break;
                 }
 
-                // Общие свойства (из абстрактного класса)
+                // Общие свойства
                 System.out.print("Новый производитель: ");
                 dev.setManufacturer(scanner.nextLine());
                 System.out.print("Новая модель: ");
                 dev.setModel(scanner.nextLine());
 
-                // Изменение уникальных свойств в зависимости от типа (полиморфизм и instanceof)
+                // ИСПРАВЛЕНИЕ: Используем ВСЕ сеттеры наследников
                 if (dev instanceof Smartphone sm) {
                     System.out.print("Новый заряд (0-100): ");
                     try { sm.setBatteryLevel(Integer.parseInt(scanner.nextLine())); } catch (Exception e) {}
+                    System.out.print("Новый размер экрана: ");
+                    try { sm.setScreenSize(Double.parseDouble(scanner.nextLine())); } catch (Exception e) {} // Использован сеттер
                     System.out.print("Новая ОС: ");
                     sm.setOsVersion(scanner.nextLine());
                 } else if (dev instanceof Radio r) {
                     System.out.print("Новая частота: ");
                     try { r.setFrequency(Double.parseDouble(scanner.nextLine())); } catch (Exception e) {}
+                    System.out.print("Новая громкость (0-100): ");
+                    try { r.setVolumeLevel(Integer.parseInt(scanner.nextLine())); } catch (Exception e) {} // Использован сеттер
                     System.out.print("Есть антенна? (true/false): ");
                     try { r.setHasAntenna(Boolean.parseBoolean(scanner.nextLine())); } catch (Exception e) {}
                 } else if (dev instanceof SatellitePhone sp) {
@@ -78,6 +112,8 @@ void main() {
                     sp.setSatelliteNetwork(scanner.nextLine());
                     System.out.print("Новая сила сигнала (0-100): ");
                     try { sp.setSignalStrength(Integer.parseInt(scanner.nextLine())); } catch (Exception e) {}
+                    System.out.print("Роуминг? (true/false): ");
+                    try { sp.setIsRoaming(Boolean.parseBoolean(scanner.nextLine())); } catch (Exception e) {} // Использован сеттер
                 }
 
                 System.out.println("Свойства обновлены.");
@@ -88,7 +124,8 @@ void main() {
                 var dev = manager.findDevice(scanner.nextLine());
                 if (dev == null) { System.out.println("Не найдено."); break; }
 
-                System.out.print("1-Вкл, 2-Выкл, 3-В сеть, 4-Сообщение: ");
+                // ИСПРАВЛЕНИЕ: Добавлен пункт 5 для вызова уникальных методов наследников
+                System.out.print("1-Вкл, 2-Выкл, 3-В сеть, 4-Сообщение, 5-Специфичные действия: ");
                 String sub = scanner.nextLine();
                 switch (sub) {
                     case "1" -> dev.turnOn();
@@ -100,6 +137,22 @@ void main() {
                     case "4" -> {
                         System.out.print("Текст: ");
                         dev.sendMessage(scanner.nextLine());
+                    }
+                    case "5" -> {
+                        // Вызов уникальных методов
+                        if (dev instanceof Smartphone sm) {
+                            System.out.print("Введите название приложения: ");
+                            sm.installApp(scanner.nextLine()); // Вызван метод installApp
+                            sm.takePhoto();                    // Вызван метод takePhoto
+                        } else if (dev instanceof Radio r) {
+                            System.out.print("Введите новую частоту для настройки: ");
+                            try { r.tuneFrequency(Double.parseDouble(scanner.nextLine())); } catch (Exception e) {} // Вызван метод tuneFrequency
+                            System.out.print("Введите изменение громкости (например, 10 или -10): ");
+                            try { r.adjustVolume(Integer.parseInt(scanner.nextLine())); } catch (Exception e) {} // Вызван метод adjustVolume
+                        } else if (dev instanceof SatellitePhone sp) {
+                            sp.updateSatellitePosition(); // Вызван метод updateSatellitePosition
+                            sp.makeEmergencyCall();       // Вызван метод makeEmergencyCall
+                        }
                     }
                     default -> System.out.println("Неверный выбор.");
                 }
