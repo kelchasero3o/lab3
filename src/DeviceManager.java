@@ -47,7 +47,7 @@ public class DeviceManager {
             return;
         }
 
-        System.out.println("\n--- НАЧАЛО ШИРОКОВЕЩАТЕЛЬНОЙ РАССЫЛКИ ---");
+        System.out.println("\nНАЧАЛО ШИРОКОВЕЩАТЕЛЬНОЙ РАССЫЛКИ");
         System.out.println("Отправитель: " + sender.getDetailedInfo());
 
         if (sender.getContacts().isEmpty()) {
@@ -66,6 +66,6 @@ public class DeviceManager {
                 System.out.println("-> Устройство " + device.getManufacturer() + " " + device.getModel() + " недоступно.");
             }
         }
-        System.out.println("--- РАССЫЛКА ЗАВЕРШЕНА. Доставлено: " + successCount + " ---\n");
+        System.out.println("РАССЫЛКА ЗАВЕРШЕНА. Доставлено: " + successCount + " ---\n");
     }
 }
