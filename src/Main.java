@@ -4,22 +4,22 @@ void main() {
     Scanner scanner = new Scanner(System.in);
     DeviceManager manager = new DeviceManager();
 
+    // Предзаполнение списка для удобства тестирования
     var phone1 = new Smartphone("Samsung", "Galaxy S24");
     phone1.addContact("Иван");
-    phone1.addContact("Мария");
     manager.addDevice(phone1);
     manager.addDevice(new Radio("Sony", "CFD-S70"));
     manager.addDevice(new SatellitePhone("Iridium", "Extreme 9575"));
 
     while (true) {
-        System.out.println("\n МЕНЮ: КОММУНИКАЦИОННЫЕ УСТРОЙСТВА");
+        System.out.println("\n=== МЕНЮ: КОММУНИКАЦИОННЫЕ УСТРОЙСТВА ===");
         System.out.println("1. Добавить устройство");
         System.out.println("2. Удалить устройство");
         System.out.println("3. Изменить свойства устройства");
         System.out.println("4. Функциональная работа");
         System.out.println("5. Показать все устройства");
         System.out.println("6. Рандомизировать свойства");
-        System.out.println("7. [Бонус] Широковещательная рассылка (Broadcast)"); // Добавлено
+        System.out.println("7. [Бонус] Широковещательная рассылка (Broadcast)");
         System.out.println("0. Выход");
         System.out.print("Выберите действие: ");
 
@@ -48,15 +48,39 @@ void main() {
             }
             case "3" -> {
                 manager.showAllDevices();
-                System.out.print("ID устройства: ");
+                System.out.print("Введите ID устройства для изменения: ");
                 var dev = manager.findDevice(scanner.nextLine());
-                if (dev != null) {
-                    System.out.print("Новый производитель: ");
-                    dev.setManufacturer(scanner.nextLine());
-                    System.out.print("Новая модель: ");
-                    dev.setModel(scanner.nextLine());
-                    System.out.println("Обновлено.");
-                } else System.out.println("Не найдено.");
+
+                if (dev == null) {
+                    System.out.println("Устройство не найдено.");
+                    break;
+                }
+
+                // Общие свойства (из абстрактного класса)
+                System.out.print("Новый производитель: ");
+                dev.setManufacturer(scanner.nextLine());
+                System.out.print("Новая модель: ");
+                dev.setModel(scanner.nextLine());
+
+                // Изменение уникальных свойств в зависимости от типа (полиморфизм и instanceof)
+                if (dev instanceof Smartphone sm) {
+                    System.out.print("Новый заряд (0-100): ");
+                    try { sm.setBatteryLevel(Integer.parseInt(scanner.nextLine())); } catch (Exception e) {}
+                    System.out.print("Новая ОС: ");
+                    sm.setOsVersion(scanner.nextLine());
+                } else if (dev instanceof Radio r) {
+                    System.out.print("Новая частота: ");
+                    try { r.setFrequency(Double.parseDouble(scanner.nextLine())); } catch (Exception e) {}
+                    System.out.print("Есть антенна? (true/false): ");
+                    try { r.setHasAntenna(Boolean.parseBoolean(scanner.nextLine())); } catch (Exception e) {}
+                } else if (dev instanceof SatellitePhone sp) {
+                    System.out.print("Новая спутниковая сеть: ");
+                    sp.setSatelliteNetwork(scanner.nextLine());
+                    System.out.print("Новая сила сигнала (0-100): ");
+                    try { sp.setSignalStrength(Integer.parseInt(scanner.nextLine())); } catch (Exception e) {}
+                }
+
+                System.out.println("Свойства обновлены.");
             }
             case "4" -> {
                 manager.showAllDevices();
@@ -85,7 +109,7 @@ void main() {
                 manager.getDevices().forEach(CommunicationDevice::randomizeProperties);
                 System.out.println("Свойства рандомизированы!");
             }
-            case "7" -> { // Добавлено
+            case "7" -> {
                 manager.showAllDevices();
                 System.out.print("ID отправителя: ");
                 String senderId = scanner.nextLine();
