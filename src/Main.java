@@ -12,7 +12,7 @@ void main() {
     manager.addDevice(new SatellitePhone("Iridium", "Extreme 9575"));
 
     while (true) {
-        System.out.println("\n=== МЕНЮ: КОММУНИКАЦИОННЫЕ УСТРОЙСТВА ===");
+        System.out.println("\n МЕНЮ: КОММУНИКАЦИОННЫЕ УСТРОЙСТВА");
         System.out.println("1. Добавить устройство");
         System.out.println("2. Удалить устройство");
         System.out.println("3. Изменить свойства устройства");
