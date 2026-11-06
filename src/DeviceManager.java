@@ -32,4 +32,39 @@ public class DeviceManager {
     public List<CommunicationDevice> getDevices() {
         return devices;
     }
+
+    // Бонусный функционал (п. 7)
+    public void broadcastMessage(String senderId, String message) {
+        var sender = findDevice(senderId);
+        if (sender == null) {
+            System.out.println("Отправитель не найден.");
+            return;
+        }
+
+        if (!sender.isPowerOn() || !sender.isConnected()) {
+            System.out.println("Отправитель должен быть включен и подключен к сети!");
+            return;
+        }
+
+        System.out.println("\n--- НАЧАЛО ШИРОКОВЕЩАТЕЛЬНОЙ РАССЫЛКИ ---");
+        System.out.println("Отправитель: " + sender.getDetailedInfo());
+
+        if (sender.getContacts().isEmpty()) {
+            System.out.println("У отправителя нет сохраненных контактов.");
+            return;
+        }
+
+        int successCount = 0;
+        for (var device : devices) {
+            if (device.getId().equals(sender.getId())) continue;
+
+            if (device.isPowerOn() && device.isConnected()) {
+                System.out.println("-> Доставлено на " + device.getManufacturer() + " " + device.getModel() + ": \"" + message + "\"");
+                successCount++;
+            } else {
+                System.out.println("-> Устройство " + device.getManufacturer() + " " + device.getModel() + " недоступно.");
+            }
+        }
+        System.out.println("--- РАССЫЛКА ЗАВЕРШЕНА. Доставлено: " + successCount + " ---\n");
+    }
 }
