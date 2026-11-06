@@ -18,6 +18,8 @@ public class Radio extends CommunicationDevice {
         if (isPowerOn) {
             this.frequency = newFrequency;
             System.out.println("Радио настроено на волну: " + newFrequency + " МГц");
+        } else {
+            System.out.println("Радио выключено.");
         }
     }
 
@@ -28,6 +30,20 @@ public class Radio extends CommunicationDevice {
         }
     }
 
+    // Сеттеры для изменения уникальных свойств через меню
+    public void setFrequency(double frequency) {
+        this.frequency = frequency;
+    }
+
+    public void setVolumeLevel(int volumeLevel) {
+        this.volumeLevel = Math.clamp(volumeLevel, 0, 100);
+    }
+
+    public void setHasAntenna(boolean hasAntenna) {
+        this.hasAntenna = hasAntenna;
+    }
+
+    // Реализация базовых абстрактных методов
     @Override
     public void turnOn() {
         this.isPowerOn = true;
@@ -54,6 +70,8 @@ public class Radio extends CommunicationDevice {
             System.out.println("Радио поймало сигнал вышки: " + networkName);
         } else if (!hasAntenna) {
             System.out.println("Нет антенны! Сигнал не ловится.");
+        } else {
+            System.out.println("Радио выключено.");
         }
     }
 
@@ -61,9 +79,12 @@ public class Radio extends CommunicationDevice {
     public void sendMessage(String message) {
         if (isPowerOn && isConnected) {
             System.out.println("Передача в эфир на частоте " + frequency + " МГц: \"" + message + "\"");
+        } else {
+            System.out.println("Невозможно передать сообщение. Проверьте питание и антенну.");
         }
     }
 
+    // Реализация дополнительных методов (п. 4)
     @Override
     public void randomizeProperties() {
         Random rand = new Random();

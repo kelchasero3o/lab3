@@ -24,9 +24,25 @@ public class SatellitePhone extends CommunicationDevice {
     public void makeEmergencyCall() {
         if (isPowerOn) {
             System.out.println("ЭКСТРЕННЫЙ ВЫЗОВ через спутник " + satelliteNetwork + "! Связь установлена.");
+        } else {
+            System.out.println("Устройство выключено.");
         }
     }
 
+    // Сеттеры для изменения уникальных свойств через меню
+    public void setSatelliteNetwork(String satelliteNetwork) {
+        this.satelliteNetwork = satelliteNetwork;
+    }
+
+    public void setSignalStrength(int signalStrength) {
+        this.signalStrength = Math.clamp(signalStrength, 0, 100);
+    }
+
+    public void setIsRoaming(boolean isRoaming) {
+        this.isRoaming = isRoaming;
+    }
+
+    // Реализация базовых абстрактных методов
     @Override
     public void turnOn() {
         this.isPowerOn = true;
@@ -61,9 +77,12 @@ public class SatellitePhone extends CommunicationDevice {
     public void sendMessage(String message) {
         if (isPowerOn && isConnected) {
             System.out.println("Отправка спутникового сообщения (SMS): \"" + message + "\"");
+        } else {
+            System.out.println("Нет соединения со спутником для отправки.");
         }
     }
 
+    // Реализация дополнительных методов (п. 4)
     @Override
     public void randomizeProperties() {
         Random rand = new Random();

@@ -23,9 +23,25 @@ public class Smartphone extends CommunicationDevice {
         if (isPowerOn && batteryLevel > 5) {
             batteryLevel -= 5;
             System.out.println("Смартфон " + model + " сделал фото. Заряд: " + batteryLevel + "%");
+        } else {
+            System.out.println("Недостаточно заряда или устройство выключено.");
         }
     }
 
+    // Сеттеры для изменения уникальных свойств через меню
+    public void setBatteryLevel(int batteryLevel) {
+        this.batteryLevel = Math.clamp(batteryLevel, 0, 100);
+    }
+
+    public void setScreenSize(double screenSize) {
+        this.screenSize = screenSize;
+    }
+
+    public void setOsVersion(String osVersion) {
+        this.osVersion = osVersion;
+    }
+
+    // Реализация базовых абстрактных методов
     @Override
     public void turnOn() {
         this.isPowerOn = true;
@@ -51,6 +67,8 @@ public class Smartphone extends CommunicationDevice {
         if (isPowerOn) {
             this.isConnected = true;
             System.out.println("Смартфон подключен к сети: " + networkName);
+        } else {
+            System.out.println("Ошибка: Смартфон выключен.");
         }
     }
 
@@ -62,9 +80,12 @@ public class Smartphone extends CommunicationDevice {
             } else {
                 System.out.println("Отправка SMS: \"" + message + "\" контактам: " + contacts);
             }
+        } else {
+            System.out.println("Ошибка: Нет сети или устройство выключено.");
         }
     }
 
+    // Реализация дополнительных методов (п. 4)
     @Override
     public void randomizeProperties() {
         Random rand = new Random();

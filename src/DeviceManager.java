@@ -2,6 +2,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DeviceManager {
+    // Единый список для всех устройств (полиморфизм)
     private final List<CommunicationDevice> devices = new ArrayList<>();
 
     public void addDevice(CommunicationDevice device) {
@@ -33,7 +34,7 @@ public class DeviceManager {
         return devices;
     }
 
-    // Бонусный функционал (п. 7)
+    // Интересный функционал (п. 7): Широковещательная рассылка
     public void broadcastMessage(String senderId, String message) {
         var sender = findDevice(senderId);
         if (sender == null) {
@@ -46,7 +47,7 @@ public class DeviceManager {
             return;
         }
 
-        System.out.println("\nНАЧАЛО ШИРОКОВЕЩАТЕЛЬНОЙ РАССЫЛКИ");
+        System.out.println("\n--- НАЧАЛО ШИРОКОВЕЩАТЕЛЬНОЙ РАССЫЛКИ ---");
         System.out.println("Отправитель: " + sender.getDetailedInfo());
 
         if (sender.getContacts().isEmpty()) {
@@ -65,6 +66,6 @@ public class DeviceManager {
                 System.out.println("-> Устройство " + device.getManufacturer() + " " + device.getModel() + " недоступно.");
             }
         }
-        System.out.println("РАССЫЛКА ЗАВЕРШЕНА. Доставлено: " + successCount + " ---\n");
+        System.out.println("--- РАССЫЛКА ЗАВЕРШЕНА. Доставлено: " + successCount + " ---\n");
     }
 }
