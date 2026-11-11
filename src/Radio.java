@@ -1,7 +1,6 @@
 import java.util.Random;
 
 public class Radio extends CommunicationDevice {
-    // Уникальные свойства (п. 5)
     private double frequency;
     private int volumeLevel;
     private boolean hasAntenna;
@@ -13,11 +12,10 @@ public class Radio extends CommunicationDevice {
         this.hasAntenna = true;
     }
 
-    // Уникальные методы (п. 5)
     public void tuneFrequency(double newFrequency) {
         if (isPowerOn) {
-            this.frequency = newFrequency;
-            System.out.println("Радио настроено на волну: " + newFrequency + " МГц");
+            setFrequency(newFrequency); // Вызов сеттера с проверкой
+            System.out.println("Радио настроено на волну: " + frequency + " МГц");
         } else {
             System.out.println("Радио выключено.");
         }
@@ -25,25 +23,32 @@ public class Radio extends CommunicationDevice {
 
     public void adjustVolume(int delta) {
         if (isPowerOn) {
-            this.volumeLevel = Math.clamp(volumeLevel + delta, 0, 100);
+            setVolumeLevel(volumeLevel + delta); // Вызов сеттера с проверкой
             System.out.println("Громкость: " + volumeLevel + "%");
         }
     }
 
-    // Сеттеры для изменения уникальных свойств через меню
+    // Сеттеры с ВАЛИДАЦИЕЙ
     public void setFrequency(double frequency) {
-        this.frequency = frequency;
+        if (frequency >= 87.5 && frequency <= 108.0) { // Стандартный FM диапазон
+            this.frequency = frequency;
+        } else {
+            System.out.println("Ошибка: частота должна быть в диапазоне 87.5 - 108.0 МГц! Значение не изменено.");
+        }
     }
 
     public void setVolumeLevel(int volumeLevel) {
-        this.volumeLevel = Math.clamp(volumeLevel, 0, 100);
+        if (volumeLevel >= 0 && volumeLevel <= 100) {
+            this.volumeLevel = volumeLevel;
+        } else {
+            System.out.println("Ошибка: громкость должна быть от 0 до 100! Значение не изменено.");
+        }
     }
 
     public void setHasAntenna(boolean hasAntenna) {
         this.hasAntenna = hasAntenna;
     }
 
-    // Реализация базовых абстрактных методов
     @Override
     public void turnOn() {
         this.isPowerOn = true;
@@ -84,12 +89,11 @@ public class Radio extends CommunicationDevice {
         }
     }
 
-    // Реализация дополнительных методов (п. 4)
     @Override
     public void randomizeProperties() {
         Random rand = new Random();
-        this.frequency = 87.5 + (108.0 - 87.5) * rand.nextDouble();
-        this.volumeLevel = rand.nextInt(0, 101);
+        setFrequency(87.5 + (108.0 - 87.5) * rand.nextDouble());
+        setVolumeLevel(rand.nextInt(0, 101));
         this.hasAntenna = rand.nextBoolean();
     }
 

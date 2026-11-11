@@ -1,7 +1,6 @@
 import java.util.Random;
 
 public class SatellitePhone extends CommunicationDevice {
-    // Уникальные свойства (п. 5)
     private String satelliteNetwork;
     private int signalStrength;
     private boolean isRoaming;
@@ -13,11 +12,10 @@ public class SatellitePhone extends CommunicationDevice {
         this.isRoaming = true;
     }
 
-    // Уникальные методы (п. 5)
     public void updateSatellitePosition() {
         if (isPowerOn) {
             System.out.println("Поиск спутников сети " + satelliteNetwork + "... Спутник найден.");
-            this.signalStrength = Math.min(100, signalStrength + 10);
+            setSignalStrength(signalStrength + 10); // Вызов сеттера с проверкой
         }
     }
 
@@ -29,20 +27,27 @@ public class SatellitePhone extends CommunicationDevice {
         }
     }
 
-    // Сеттеры для изменения уникальных свойств через меню
+    // Сеттеры с ВАЛИДАЦИЕЙ
     public void setSatelliteNetwork(String satelliteNetwork) {
-        this.satelliteNetwork = satelliteNetwork;
+        if (satelliteNetwork != null && !satelliteNetwork.isBlank()) {
+            this.satelliteNetwork = satelliteNetwork;
+        } else {
+            System.out.println("Ошибка: название спутниковой сети не может быть пустым! Значение не изменено.");
+        }
     }
 
     public void setSignalStrength(int signalStrength) {
-        this.signalStrength = Math.clamp(signalStrength, 0, 100);
+        if (signalStrength >= 0 && signalStrength <= 100) {
+            this.signalStrength = signalStrength;
+        } else {
+            System.out.println("Ошибка: сила сигнала должна быть от 0 до 100! Значение не изменено.");
+        }
     }
 
     public void setIsRoaming(boolean isRoaming) {
         this.isRoaming = isRoaming;
     }
 
-    // Реализация базовых абстрактных методов
     @Override
     public void turnOn() {
         this.isPowerOn = true;
@@ -66,7 +71,7 @@ public class SatellitePhone extends CommunicationDevice {
     public void connectToNetwork(String networkName) {
         if (isPowerOn && signalStrength > 20) {
             this.isConnected = true;
-            this.satelliteNetwork = networkName;
+            setSatelliteNetwork(networkName);
             System.out.println("Подключение к спутниковой сети: " + networkName + " установлено.");
         } else {
             System.out.println("Нет сигнала спутника (слабый уровень).");
@@ -82,11 +87,10 @@ public class SatellitePhone extends CommunicationDevice {
         }
     }
 
-    // Реализация дополнительных методов (п. 4)
     @Override
     public void randomizeProperties() {
         Random rand = new Random();
-        this.signalStrength = rand.nextInt(0, 101);
+        setSignalStrength(rand.nextInt(0, 101));
         this.isRoaming = rand.nextBoolean();
         String[] networks = {"Iridium", "Globalstar", "Inmarsat", "Thuraya"};
         this.satelliteNetwork = networks[rand.nextInt(networks.length)];

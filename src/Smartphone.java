@@ -1,7 +1,6 @@
 import java.util.Random;
 
 public class Smartphone extends CommunicationDevice {
-    // Уникальные свойства (п. 5)
     private int batteryLevel;
     private double screenSize;
     private String osVersion;
@@ -13,7 +12,6 @@ public class Smartphone extends CommunicationDevice {
         this.osVersion = "Android 14";
     }
 
-    // Уникальные методы (п. 5)
     public void installApp(String appName) {
         if (isPowerOn) System.out.println("Приложение " + appName + " установлено на " + model);
         else System.out.println("Сначала включите устройство!");
@@ -21,27 +19,38 @@ public class Smartphone extends CommunicationDevice {
 
     public void takePhoto() {
         if (isPowerOn && batteryLevel > 5) {
-            batteryLevel -= 5;
+            setBatteryLevel(batteryLevel - 5); // Используем сеттер для списания заряда
             System.out.println("Смартфон " + model + " сделал фото. Заряд: " + batteryLevel + "%");
         } else {
             System.out.println("Недостаточно заряда или устройство выключено.");
         }
     }
 
-    // Сеттеры для изменения уникальных свойств через меню
+    // Сеттеры с ВАЛИДАЦИЕЙ
     public void setBatteryLevel(int batteryLevel) {
-        this.batteryLevel = Math.clamp(batteryLevel, 0, 100);
+        if (batteryLevel >= 0 && batteryLevel <= 100) {
+            this.batteryLevel = batteryLevel;
+        } else {
+            System.out.println("Ошибка: заряд должен быть от 0 до 100! Значение не изменено.");
+        }
     }
 
     public void setScreenSize(double screenSize) {
-        this.screenSize = screenSize;
+        if (screenSize > 0 && screenSize <= 15.0) {
+            this.screenSize = screenSize;
+        } else {
+            System.out.println("Ошибка: размер экрана должен быть от 1 до 15 дюймов! Значение не изменено.");
+        }
     }
 
     public void setOsVersion(String osVersion) {
-        this.osVersion = osVersion;
+        if (osVersion != null && !osVersion.isBlank()) {
+            this.osVersion = osVersion;
+        } else {
+            System.out.println("Ошибка: версия ОС не может быть пустой! Значение не изменено.");
+        }
     }
 
-    // Реализация базовых абстрактных методов
     @Override
     public void turnOn() {
         this.isPowerOn = true;
@@ -85,12 +94,11 @@ public class Smartphone extends CommunicationDevice {
         }
     }
 
-    // Реализация дополнительных методов (п. 4)
     @Override
     public void randomizeProperties() {
         Random rand = new Random();
-        this.batteryLevel = rand.nextInt(1, 101);
-        this.screenSize = 5.0 + (8.0 - 5.0) * rand.nextDouble();
+        setBatteryLevel(rand.nextInt(0, 101));
+        setScreenSize(5.0 + (8.0 - 5.0) * rand.nextDouble());
     }
 
     @Override

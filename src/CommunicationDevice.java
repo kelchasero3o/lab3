@@ -32,18 +32,34 @@ public abstract class CommunicationDevice {
     public abstract String getDetailedInfo();
     public abstract void randomizeProperties();
 
-    // Геттеры и сеттеры (п. 4.1 - не считаются доп. функционалом)
+    // Геттеры и сеттеры с ВАЛИДАЦИЕЙ
     public String getId() { return id; }
     public String getManufacturer() { return manufacturer; }
-    public void setManufacturer(String manufacturer) { this.manufacturer = manufacturer; }
+
+    public void setManufacturer(String manufacturer) {
+        if (manufacturer != null && !manufacturer.isBlank()) {
+            this.manufacturer = manufacturer;
+        } else {
+            System.out.println("Ошибка: производитель не может быть пустым! Значение не изменено.");
+        }
+    }
+
     public String getModel() { return model; }
-    public void setModel(String model) { this.model = model; }
+
+    public void setModel(String model) {
+        if (model != null && !model.isBlank()) {
+            this.model = model;
+        } else {
+            System.out.println("Ошибка: модель не может быть пустой! Значение не изменено.");
+        }
+    }
+
     public List<String> getContacts() { return contacts; }
     public boolean isConnected() { return isConnected; }
     public boolean isPowerOn() { return isPowerOn; }
 
     public void addContact(String contact) {
-        if (!contacts.contains(contact)) {
+        if (contact != null && !contact.isBlank() && !contacts.contains(contact)) {
             contacts.add(contact);
         }
     }
