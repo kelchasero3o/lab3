@@ -26,7 +26,7 @@ public class Smartphone extends CommunicationDevice {
         }
     }
 
-    // Сеттеры с ВАЛИДАЦИЕЙ
+    // Сеттеры с ВАЛИДАЦИЕЙ (используются при чтении из файла)
     public void setBatteryLevel(int batteryLevel) {
         if (batteryLevel >= 0 && batteryLevel <= 100) {
             this.batteryLevel = batteryLevel;

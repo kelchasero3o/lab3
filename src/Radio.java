@@ -30,7 +30,7 @@ public class Radio extends CommunicationDevice {
 
     // Сеттеры с ВАЛИДАЦИЕЙ
     public void setFrequency(double frequency) {
-        if (frequency >= 87.5 && frequency <= 108.0) { // Стандартный FM диапазон
+        if (frequency >= 87.5 && frequency <= 108.0) {
             this.frequency = frequency;
         } else {
             System.out.println("Ошибка: частота должна быть в диапазоне 87.5 - 108.0 МГц! Значение не изменено.");
