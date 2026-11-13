@@ -26,45 +26,40 @@ public class DeviceFileReader {
         return filePath;
     }
 
-    // [COMMIT 2] Главный метод чтения и парсинга файла
     public List<CommunicationDevice> readDevices() {
         List<CommunicationDevice> loadedDevices = new ArrayList<>();
 
-        // Сбрасываем статистику перед новым чтением
         objectsFound = 0;
         fieldsRead = 0;
         fieldsMissing = 0;
 
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line;
-            // Используем Map для сбора свойств одного объекта перед его созданием
             Map<String, String> currentProps = new HashMap<>();
 
             while ((line = br.readLine()) != null) {
                 line = line.trim();
 
-                // Пропускаем пустые строки (они служат разделителями между устройствами)
                 if (line.isEmpty()) {
                     if (!currentProps.isEmpty()) {
-                        // TODO: Вызвать метод создания объекта
+                        // [COMMIT 3] Вызываем метод создания объекта
+                        parseAndCreateDevice(currentProps, loadedDevices);
                         currentProps.clear();
                     }
                     continue;
                 }
 
-                // Разделяем строку по двоеточию (формат FieldName: FieldValue,)
                 String[] parts = line.split(":", 2);
                 if (parts.length == 2) {
                     String key = parts[0].trim();
-                    // Убираем запятую в конце значения, если она есть
                     String value = parts[1].trim().replaceAll(",$", "");
                     currentProps.put(key, value);
                 }
             }
 
-            // Обрабатываем последний объект, если файл не заканчивается пустой строкой
             if (!currentProps.isEmpty()) {
-                // TODO: Вызвать метод создания объекта
+                // [COMMIT 3] Вызываем метод создания объекта
+                parseAndCreateDevice(currentProps, loadedDevices);
             }
 
         } catch (IOException e) {
@@ -72,5 +67,36 @@ public class DeviceFileReader {
         }
 
         return loadedDevices;
+    }
+
+    // [COMMIT 3] Вспомогательный метод для создания объекта на основе собранных свойств
+    private void parseAndCreateDevice(Map<String, String> props, List<CommunicationDevice> targetList) {
+        String type = props.get("Type");
+        if (type == null) {
+            System.out.println("Предупреждение: пропущен блок без указания Type.");
+            return;
+        }
+
+        String man = props.getOrDefault("Manufacturer", "Unknown");
+        String mod = props.getOrDefault("Model", "Unknown");
+
+        CommunicationDevice device = null;
+
+        // Обрабатываем пока только Смартфоны
+        if (type.equalsIgnoreCase("Smartphone")) {
+            Smartphone sm = new Smartphone(man, mod);
+            fieldsRead += 2; // Manufacturer и Model
+
+            if (props.containsKey("BatteryLevel")) { sm.setBatteryLevel(Integer.parseInt(props.get("BatteryLevel"))); fieldsRead++; } else fieldsMissing++;
+            if (props.containsKey("ScreenSize")) { sm.setScreenSize(Double.parseDouble(props.get("ScreenSize"))); fieldsRead++; } else fieldsMissing++;
+            if (props.containsKey("OsVersion")) { sm.setOsVersion(props.get("OsVersion")); fieldsRead++; } else fieldsMissing++;
+
+            device = sm;
+        }
+
+        if (device != null) {
+            targetList.add(device);
+            objectsFound++;
+        }
     }
 }
