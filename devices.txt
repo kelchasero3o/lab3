@@ -1,7 +1,7 @@
 Type: Smartphone,
 Manufacturer: Apple,
 Model: iPhone 15 Pro,
-BatteryLevel: 85,
+BatteryLevel: -85,
 ScreenSize: 6.1,
 OsVersion: iOS 17,
 
@@ -9,7 +9,7 @@ Type: Radio,
 Manufacturer: Sony,
 Model: CFD-S70,
 Frequency: 101.5,
-VolumeLevel: 45,
+VolumeLevel: -45,
 HasAntenna: true,
 
 Type: SatellitePhone,
