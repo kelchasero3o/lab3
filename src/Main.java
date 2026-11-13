@@ -7,8 +7,8 @@ void main() {
     var phone1 = new Smartphone("Samsung", "Galaxy S24");
     phone1.addContact("Иван");
     manager.addDevice(phone1);
-//    manager.addDevice(new Radio("Sony", "CFD-S70"));
-//    manager.addDevice(new SatellitePhone("Iridium", "Extreme 9575"));
+    manager.addDevice(new Radio("Sony", "CFD-S70"));
+    manager.addDevice(new SatellitePhone("Iridium", "Extreme 9575"));
 
     while (true) {
         System.out.println("\nМЕНЮ: КОММУНИКАЦИОННЫЕ УСТРОЙСТВА");
