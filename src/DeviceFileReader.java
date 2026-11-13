@@ -42,7 +42,6 @@ public class DeviceFileReader {
 
                 if (line.isEmpty()) {
                     if (!currentProps.isEmpty()) {
-                        // [COMMIT 3] Вызываем метод создания объекта
                         parseAndCreateDevice(currentProps, loadedDevices);
                         currentProps.clear();
                     }
@@ -58,7 +57,6 @@ public class DeviceFileReader {
             }
 
             if (!currentProps.isEmpty()) {
-                // [COMMIT 3] Вызываем метод создания объекта
                 parseAndCreateDevice(currentProps, loadedDevices);
             }
 
@@ -66,10 +64,14 @@ public class DeviceFileReader {
             System.out.println("Ошибка при чтении файла: " + e.getMessage());
         }
 
+        System.out.println("\n--- СТАТИСТИКА ЧТЕНИЯ ---");
+        System.out.println("Успешно создано объектов: " + objectsFound);
+        System.out.println("Успешно прочитано свойств: " + fieldsRead);
+        System.out.println("Потеряно/не найдено свойств: " + fieldsMissing);
+
         return loadedDevices;
     }
 
-    // [COMMIT 3] Вспомогательный метод для создания объекта на основе собранных свойств
     private void parseAndCreateDevice(Map<String, String> props, List<CommunicationDevice> targetList) {
         String type = props.get("Type");
         if (type == null) {
@@ -82,16 +84,35 @@ public class DeviceFileReader {
 
         CommunicationDevice device = null;
 
-        // Обрабатываем пока только Смартфоны
         if (type.equalsIgnoreCase("Smartphone")) {
             Smartphone sm = new Smartphone(man, mod);
-            fieldsRead += 2; // Manufacturer и Model
+            fieldsRead += 2;
 
             if (props.containsKey("BatteryLevel")) { sm.setBatteryLevel(Integer.parseInt(props.get("BatteryLevel"))); fieldsRead++; } else fieldsMissing++;
             if (props.containsKey("ScreenSize")) { sm.setScreenSize(Double.parseDouble(props.get("ScreenSize"))); fieldsRead++; } else fieldsMissing++;
             if (props.containsKey("OsVersion")) { sm.setOsVersion(props.get("OsVersion")); fieldsRead++; } else fieldsMissing++;
 
             device = sm;
+        }
+        else if (type.equalsIgnoreCase("Radio")) {
+            Radio r = new Radio(man, mod);
+            fieldsRead += 2;
+
+            if (props.containsKey("Frequency")) { r.setFrequency(Double.parseDouble(props.get("Frequency"))); fieldsRead++; } else fieldsMissing++;
+            if (props.containsKey("VolumeLevel")) { r.setVolumeLevel(Integer.parseInt(props.get("VolumeLevel"))); fieldsRead++; } else fieldsMissing++;
+            if (props.containsKey("HasAntenna")) { r.setHasAntenna(Boolean.parseBoolean(props.get("HasAntenna"))); fieldsRead++; } else fieldsMissing++;
+
+            device = r;
+        }
+        else if (type.equalsIgnoreCase("SatellitePhone")) {
+            SatellitePhone sp = new SatellitePhone(man, mod);
+            fieldsRead += 2;
+
+            if (props.containsKey("SatelliteNetwork")) { sp.setSatelliteNetwork(props.get("SatelliteNetwork")); fieldsRead++; } else fieldsMissing++;
+            if (props.containsKey("SignalStrength")) { sp.setSignalStrength(Integer.parseInt(props.get("SignalStrength"))); fieldsRead++; } else fieldsMissing++;
+            if (props.containsKey("IsRoaming")) { sp.setIsRoaming(Boolean.parseBoolean(props.get("IsRoaming"))); fieldsRead++; } else fieldsMissing++;
+
+            device = sp;
         }
 
         if (device != null) {
